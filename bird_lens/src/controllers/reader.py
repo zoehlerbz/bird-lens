@@ -3,11 +3,10 @@ import os
 
 class Reader:
     def __init__(self, video_path):
-        self.video = cv2.VideoCapture(video_path)
-
         if not os.path.exists(video_path):
             raise FileNotFoundError(f"\nArquivo não encontrado: '{video_path}'")
-
+        
+        self.video = cv2.VideoCapture(video_path)
         if not self.video.isOpened():
             raise ValueError(f"\nErro ao abrir vídeo/câmera: '{video_path}'")
 
