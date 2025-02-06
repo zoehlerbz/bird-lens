@@ -10,7 +10,7 @@ class App:
 
     def run(self):
         reader = Reader(self.path)
-        calibrator = Calibrator(self.calibration_path, static=True).compute_background()
+        calibrator = Calibrator(self.calibration_path).compute_background()
 
         for frame in reader:
 

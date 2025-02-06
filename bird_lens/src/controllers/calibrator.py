@@ -1,10 +1,15 @@
 import cv2
+import os
 
 class Calibrator:
-    def __init__(self, calibration_path: str, alpha: float = 0.05, static: bool = True):
+    def __init__(self, calibration_path: str, alpha: float = 0.05):
+        if not os.path.exists(calibration_path):
+            raise FileNotFoundError(f"\nArquivo não encontrado: '{calibration_path}'")
+        if isinstance(calibration_path, int):
+            raise ValueError(f"\nO arquivo de calibração não pode ser uma câmera: '{calibration_path}'")
         self.calibration_path = calibration_path
+        
         self.alpha = alpha
-        self.static = static
         self.fundo = None
     
     def compute_background(self):
