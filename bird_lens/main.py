@@ -1,6 +1,7 @@
 import cv2
 from bird_lens.src.controllers.reader import Reader
 from bird_lens.src.controllers.calibrator import Calibrator
+from bird_lens.src.controllers.object_finder import ObjectFinder
 from bird_lens.src.services.filter import Filter
 
 class App:
@@ -13,12 +14,16 @@ class App:
         calibrator = Calibrator(self.calibration_path).compute_background()
 
         for frame in reader:
+            # Diferença entre o frame atual e o frame de calibração
+            diff = Filter().color(cv2.absdiff(calibrator, frame))
 
-            diff = cv2.absdiff(calibrator, frame)
+            # Encontra os contornos e áreas dos objetos e delimita os objetos
+            finder = ObjectFinder(diff)
+            finder.draw_objects(frame)
 
             frame = Filter().resize(frame)
             cv2.imshow('BirdLens', frame)
-            cv2.imshow('BirdLens - diff', Filter().resize(diff))
+            #cv2.imshow('BirdLens - diff', Filter().resize(diff))
             
             # Sai quando pressionar 'Esc' ou fechar a janela
             k = cv2.waitKey(reader.get_fps()) & 0xFF
