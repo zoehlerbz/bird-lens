@@ -25,7 +25,7 @@ class App:
             filter.average_blur()
             filter.dilate()
             filter.erode()
-            filter.threshold(threshold=110)
+            filter.threshold(threshold=0, threshold_type=cv2.THRESH_OTSU)
 
             # Encontra os contornos e áreas dos objetos e delimita os objetos
             finder = ObjectFinder(filter.frame)
