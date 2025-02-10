@@ -14,21 +14,32 @@ class App:
         calibrator = Calibrator(self.calibration_path).compute_background()
 
         for frame in reader:
+            fps = reader.get_fps()
+
             # Diferença entre o frame atual e o frame de calibração
-            diff = Filter().color(cv2.absdiff(calibrator, frame))
+            diff = cv2.absdiff(calibrator, frame)
+
+            # Filtra a imagem
+            filter = Filter(diff)
+            filter.color()
+            filter.average_blur()
+            filter.dilate()
+            filter.erode()
+            filter.threshold(threshold=110)
 
             # Encontra os contornos e áreas dos objetos e delimita os objetos
-            finder = ObjectFinder(diff)
+            finder = ObjectFinder(filter.frame)
             finder.draw_objects(frame)
+            finder.write_objects(frame)
 
-            frame = Filter().resize(frame)
-            cv2.imshow('BirdLens', frame)
-            #cv2.imshow('BirdLens - diff', Filter().resize(diff))
+            frame = Filter(frame)
+            frame.resize()
+
+            cv2.imshow('BirdLens', frame.frame)
             
             # Sai quando pressionar 'Esc' ou fechar a janela
-            k = cv2.waitKey(reader.get_fps()) & 0xFF
+            k = cv2.waitKey(fps) & 0xFF
             if k == 27 or cv2.getWindowProperty('BirdLens', cv2.WND_PROP_VISIBLE) < 1:
                 break
         
         reader.cleaner()
-        cv2.destroyAllWindows()

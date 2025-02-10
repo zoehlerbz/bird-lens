@@ -13,6 +13,9 @@ class Reader:
     def get_fps(self):
         return int(self.video.get(cv2.CAP_PROP_FPS))
 
+    def get_index(self):
+        return int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
+
     def reader(self):
         ret, frame = self.video.read()
         if not ret:
